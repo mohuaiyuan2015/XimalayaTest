@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">tuubaSongPhone</string>
+    <string name="app_key">b8ffada89045a2304b1ea1cfe5ad5099</string>
+    <string name="app_secret">628b240ef2d9742d0a8431718205f34c</string>
+    <string name="package_id">com.tuuba.ximalayatest</string>
+</resources>
