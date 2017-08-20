@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+   <include layout="@layout/midea_play_layout"></include>
+
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -16,6 +18,7 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="getCategory"
+          android:visibility="gone"
           />
 
       <Button
@@ -24,6 +27,7 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="getTags"
+          android:visibility="gone"
           />
 
       <Button
@@ -32,6 +36,7 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="getAlbumList"
+          android:visibility="gone"
           />
 
       <Button
@@ -41,8 +46,33 @@
           android:textAllCaps="false"
           android:text="getTracks"
           />
+      <Button
+          android:id="@+id/play"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textAllCaps="false"
+          android:text="Play"
+          android:visibility="gone"
+          />
+
+      <Button
+          android:id="@+id/play2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textAllCaps="false"
+          android:text="Play2"
+          />
 
    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/stracksRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
 
 
 

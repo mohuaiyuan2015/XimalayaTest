@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="track_title">歌曲名: </string>
+    <string name="duration">时长: </string>
+
+</resources>
