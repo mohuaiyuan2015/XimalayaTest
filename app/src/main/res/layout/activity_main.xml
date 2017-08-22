@@ -36,7 +36,6 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="getAlbumList"
-          android:visibility="gone"
           />
 
       <Button
@@ -45,6 +44,15 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="getTracks"
+          />
+
+      <Button
+          android:id="@+id/getAllTracks"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textAllCaps="false"
+          android:text="getAllTracks"
+          android:visibility="gone"
           />
       <Button
           android:id="@+id/play"
@@ -61,7 +69,17 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="Play2"
+
           />
+       <Button
+           android:id="@+id/getDebugMsg"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textAllCaps="false"
+           android:text="getDebugMsg"
+
+           />
+
 
    </LinearLayout>
 
