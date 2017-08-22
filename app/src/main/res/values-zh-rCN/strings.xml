@@ -4,4 +4,12 @@
     <string name="track_title">歌曲名: </string>
     <string name="duration">时长: </string>
 
+
+    <string name="get_gategory">获取内容分类</string>
+    <string name="get_Tags">获取标签</string>
+    <string name="get_albumList">获取专辑列表</string>
+    <string name="get_tracks">获取音乐列表</string>
+    <string name="playMusic">播放</string>
+
+
 </resources>

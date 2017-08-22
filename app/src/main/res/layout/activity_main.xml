@@ -35,7 +35,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:textAllCaps="false"
-          android:text="getAlbumList"
+          android:text="@string/get_albumList"
+          android:visibility="gone"
           />
 
       <Button
@@ -43,7 +44,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:textAllCaps="false"
-          android:text="getTracks"
+          android:text="@string/get_tracks"
           />
 
       <Button
@@ -59,7 +60,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:textAllCaps="false"
-          android:text="Play"
+          android:text="@string/playMusic"
           android:visibility="gone"
           />
 
@@ -68,7 +69,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:textAllCaps="false"
-          android:text="Play2"
+          android:text="@string/playMusic"
+          android:visibility="gone"
 
           />
        <Button

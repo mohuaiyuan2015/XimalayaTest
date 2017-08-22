@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private int calcDimension;
     private String tagName;
     private int page;
-    private int albumId;
+    private long albumId;
 
     //midea play
     private TextView mMessage;
@@ -125,10 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         initListener();
 
-
         specificParams = new HashMap<String, String>();
-
-
 
     }
 
@@ -235,26 +233,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "getAlbumList  onClick: ");
-                if (!specificParams.isEmpty()) {
-                    specificParams.clear();
-                }
-
-                //音乐分类
-                categoryId = 2;
-                //计算维度，现支持最火（1），最新（2），经典或播放最多（3）
-                calcDimension = 1;
-//                //分类下对应的专辑标签，不填则为热门分类
-//                tagName = "歌单";
-
-                //返回第几页，必须大于等于1，不填默认为1
-//                page=3000;
-                specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
-                specificParams.put(DTransferConstants.CALC_DIMENSION, String.valueOf(calcDimension));
-//                specificParams.put(DTransferConstants.PAGE,String.valueOf(page));
-//                specificParams.put(DTransferConstants.TAG_NAME, tagName);
-
-                getAlbumList(specificParams);
-
+                getAlbumList();
             }
         });
 
@@ -262,32 +241,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "getTracks onClick: ");
-
-                //--------getAlbumList---------------------
-                if (!specificParams.isEmpty()) {
-                    specificParams.clear();
+                if(!tracks.isEmpty()){
+                    tracks.clear();
+                    reflashDataSetChanged();
                 }
-
-                //音乐分类
-                categoryId = 2;
-                //计算维度，现支持最火（1），最新（2），经典或播放最多（3）
-                calcDimension = 1;
-//                //分类下对应的专辑标签，不填则为热门分类
-//                tagName = "歌单";
-
-                //返回第几页，必须大于等于1，不填默认为1
-//                page=3000;
-                specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
-                specificParams.put(DTransferConstants.CALC_DIMENSION, String.valueOf(calcDimension));
-//                specificParams.put(DTransferConstants.PAGE,String.valueOf(page));
-//                specificParams.put(DTransferConstants.TAG_NAME, tagName);
-
-                getAlbumList(specificParams);
-
-                //---------------------------------
-
-
-
+                getAlbumList(true);
             }
         });
 
@@ -295,13 +253,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.e(TAG, "getAllTracks onClick: " );
-
                 for(int i=0;i<albums.size();i++){
-
                     getTracksByAlbum(albums.get(i));
-
                 }
-                
             }
         });
 
@@ -347,12 +301,12 @@ public class MainActivity extends AppCompatActivity {
                 String play_url_64_m4a="http://audio.xmcdn.com/group29/M09/B2/7C/wKgJWVlLPMOgbRdFACK7q-Ca5mo930.m4a";
 
 
-                options.put(PLAY_URL_32,play_url_32);
-                options.put(PLAY_URL_64,play_url_64);
-                options.put(PLAY_URL_24_M4a,play_url_24_m4a);
-                options.put(PLAY_URL_64_M4a,play_url_64_m4a);
+                options.put(CommonRequestManager.PLAY_URL_32,play_url_32);
+                options.put(CommonRequestManager.PLAY_URL_64,play_url_64);
+                options.put(CommonRequestManager.PLAY_URL_24_M4a,play_url_24_m4a);
+                options.put(CommonRequestManager.PLAY_URL_64_M4a,play_url_64_m4a);
 
-                Track track=initTrack(options);
+                Track track=manager.initTrack(options);
 
 //                String trackTitle="班得瑞 - 清晨";
 //                track.setTrackTitle(trackTitle);
@@ -466,7 +420,9 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case TO_GET_TRICK:
-                    albumId = 4747076;
+                    Random random=new Random();
+                    int index=random.nextInt(albums.size());
+                    albumId =  albums.get(index).getId();
                     getTracks(albumId);
 
                     break;
@@ -481,65 +437,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final String TRACK_KIND="track";
-    private static final String PLAY_URL_32="play_url_32";
-    private static final String PLAY_URL_64="play_url_64";
-    private static final String PLAY_URL_24_M4a="play_url_24_m4a";
-    private static final String PLAY_URL_64_M4a="play_url_64_m4a";
 
-    /**
-     *init a base track
-     * @param options:play_url_32 ,play_url_64 ,play_url_24_m4a and play_url_64_m4a,those options can not be all null.
-     * @return track if is success,null while those options are all null.
-     */
-    private Track initTrack(Map<String,String>options){
 
-        if (options==null || options.isEmpty()){
-            return null;
+    private int successCount=0;
+    private void getAlbumList() {
+        getAlbumList(false);
+    }
+    private void getAlbumList(boolean isGetTrack) {
+        Log.d(TAG, "getAlbumList: ");
+
+        if (!specificParams.isEmpty()) {
+            specificParams.clear();
         }
 
-        Track track=new Track();
-        track.setKind(TRACK_KIND);
+        //音乐分类
+        categoryId = 2;
+        //计算维度，现支持最火（1），最新（2），经典或播放最多（3）
+        calcDimension = 1;
+        //分类下对应的专辑标签，不填则为热门分类
+//        tagName = "歌单";
 
-        boolean initState=false;
-
-        String play_url_32=options.get(PLAY_URL_32);
-        if(play_url_32!=null){
-            initState=true;
-            track.setPlayUrl32(play_url_32);
-        }
-
-        String play_url_64=options.get(PLAY_URL_64);
-        if(play_url_64!=null){
-            initState=true;
-            track.setPlayUrl64(play_url_64);
-        }
-
-        String play_url_24_m4a=options.get(PLAY_URL_24_M4a);
-        if(play_url_24_m4a!=null){
-            initState=true;
-            track.setPlayUrl24M4a(play_url_24_m4a);
-        }
-
-        String play_url_64_m4a=options.get(PLAY_URL_64_M4a);
-        if(play_url_64_m4a!=null){
-            initState=true;
-            track.setPlayUrl64M4a(play_url_64_m4a);
-        }
-
-        if(!initState){
-            return null;
-        }
-
-        return track;
+        //返回第几页，必须大于等于1，不填默认为1
+//        page = 3000;
+        specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
+        specificParams.put(DTransferConstants.CALC_DIMENSION, String.valueOf(calcDimension));
+//        specificParams.put(DTransferConstants.PAGE, String.valueOf(page));
+//        specificParams.put(DTransferConstants.TAG_NAME, tagName);
+        getAlbumList(specificParams,isGetTrack);
     }
 
-
-    private void getAlbumList(final Map<String, String> specificParams){
+    private void getAlbumList(final Map<String, String> specificParams, final boolean isGetTrack){
         Log.d(TAG, "getAlbumList: ");
         if (!albums.isEmpty()){
             albums.clear();
         }
+        //init
+        successCount=0;
+
 
         CommonRequest.getAlbumList(specificParams, new IDataCallBack<AlbumList>() {
 
@@ -548,7 +482,8 @@ public class MainActivity extends AppCompatActivity {
 //                albums.addAll(albumList.getAlbums());
 //                Log.d(TAG, "albumList = [" + albumList + "]");
 //                Log.d(TAG, "albumListToString: " + MyUtils.getInstance().albumListToString(albumList));
-                int totalPage= albumList.getTotalPage();
+                final int totalPage= albumList.getTotalPage();
+
                 for(int i=0;i<totalPage;i++){
                     specificParams.put(DTransferConstants.PAGE,String.valueOf(i+1));
                     CommonRequest.getAlbumList(specificParams, new IDataCallBack<AlbumList>() {
@@ -556,18 +491,22 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(AlbumList albumList) {
                             albums.addAll(albumList.getAlbums());
                             Log.d(TAG, "albumList = [" + albumList + "]");
+                            successCount++;
+                            Log.d(TAG, "successCount: "+successCount);
+                            if(isGetTrack && successCount==totalPage && successCount!=0 ) {
+                                Message message = new Message();
+                                message.what = TO_GET_TRICK;
+                                myHandler.sendMessage(message);
+                            }
                         }
 
                         @Override
-                        public void onError(int i, String s) {
+                        public void onError(int code, String message) {
+                            Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
 
                         }
                     });
                 }
-
-                Message message=new Message();
-                message.what=TO_GET_TRICK;
-                myHandler.sendMessage(message);
 
             }
 
@@ -580,7 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void getTracks(int albumId){
+    private void getTracks(long albumId){
 
         Album album=null;
         for(int i=0;i<albums.size();i++){
@@ -599,9 +538,6 @@ public class MainActivity extends AppCompatActivity {
         if(album==null){
             Log.e(TAG, "album==null: ");
             return;
-        }
-        if(!tracks.isEmpty()){
-            tracks.clear();
         }
 
         int pageCount=0;
