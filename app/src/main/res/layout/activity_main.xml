@@ -1,162 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
-   <include layout="@layout/midea_play_layout"></include>
-
-
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="vertical"
-       >
-      <Button
-          android:id="@+id/getCategory"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="getCategory"
-          android:visibility="gone"
-          />
-
-      <Button
-          android:id="@+id/getTags"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="getTags"
-          android:visibility="gone"
-          />
-
-      <Button
-          android:id="@+id/getAlbumList"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="@string/get_albumList"
-          android:visibility="gone"
-          />
-
-      <Button
-          android:id="@+id/getTracks"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="@string/get_tracks"
-          android:visibility="gone"
-          />
-
-      <Button
-          android:id="@+id/getAllTracks"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="getAllTracks"
-          android:visibility="gone"
-          />
-      <Button
-          android:id="@+id/play"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="@string/playMusic"
-          android:visibility="gone"
-          />
-
-      <Button
-          android:id="@+id/play2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:textAllCaps="false"
-          android:text="@string/playMusic"
-
-          />
-       <Button
-           android:id="@+id/getDebugMsg"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:textAllCaps="false"
-           android:text="getDebugMsg"
-
-           />
-
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="vertical"
-           >
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
-               <TextView
-                   android:layout_width="0dip"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:text="@string/cagetoryId"
-                   />
-               <EditText
-                   android:id="@+id/voiceCategory"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:hint="@string/hint_input_category"
-                   />
-
-           </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal"
-               >
-               <TextView
-                   android:layout_width="0dip"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:text="@string/voice_tag_name"
-                   />
-               <EditText
-                   android:id="@+id/voiceTagname"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:hint="@string/hint_input_tag_name"
-                   />
-
-           </LinearLayout>
-
-           <Button
-               android:id="@+id/getVoiceTags"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="@string/get_voices_tags"
-               />
-
-           <Button
-               android:id="@+id/getVoicesList"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="@string/get_voicesList"
-               />
-
-
-       </LinearLayout>
-
-
-   </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/stracksRecyclerView"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         >
-
-    </android.support.v7.widget.RecyclerView>
-
+        <include layout="@layout/midea_play_layout"></include>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <Button
+                android:id="@+id/getCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="getCategory"
+                android:visibility="gone"
+                />
 
-</LinearLayout>
+            <Button
+                android:id="@+id/getTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="getTags"
+                android:visibility="gone"
+                />
+
+            <Button
+                android:id="@+id/getAlbumList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="@string/get_albumList"
+                />
+
+            <Button
+                android:id="@+id/getTracks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="@string/get_tracks"
+                />
+
+            <Button
+                android:id="@+id/getAllTracks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="getAllTracks"
+                android:visibility="gone"
+                />
+            <Button
+                android:id="@+id/play"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="@string/playMusic"
+                android:visibility="gone"
+                />
+
+            <Button
+                android:id="@+id/play2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="@string/playMusic"
+
+                />
+            <Button
+                android:id="@+id/getDebugMsg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="getDebugMsg"
+
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cagetoryId"
+                        />
+                    <EditText
+                        android:id="@+id/voiceCategory"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_input_category"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/voice_tag_name"
+                        />
+                    <EditText
+                        android:id="@+id/voiceTagname"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_input_tag_name"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/voice_calc_dimension"
+                        />
+                    <EditText
+                        android:id="@+id/voiceDimension"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_input_calc_dimension"
+                        />
+
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/getVoiceTags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_voices_tags"
+                    />
+
+                <Button
+                    android:id="@+id/getVoicesList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_voicesList"
+                    />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/stracksRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+

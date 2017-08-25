@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+//import com.tuuba.trackdto.library.TrackDTO;
 import com.tuuba.ximalayatest.R;
 import com.tuuba.ximalayatest.adapter.TrackAdapter;
 import com.tuuba.ximalayatest.dto.TrackDTO;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private Button getDebugMsg;
     private EditText voiceCategory;
     private EditText voiceTagname;
+    private EditText voiceDimension;
     private Button getVoicesTags;
     private Button getVoicesList;
     private RecyclerView tracksRecyclerView;
@@ -129,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
         tracksRecyclerView.setLayoutManager(manager);
         trackAdapter=new TrackAdapter(context,tracks);
         tracksRecyclerView.setAdapter(trackAdapter);
+
+        tracksRecyclerView.setNestedScrollingEnabled(false);
 
         initListener();
 
@@ -222,7 +226,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "getAlbumList  onClick: ");
-                getAlbumList();
+                //mohuaiyuan 201708
+//                getAlbumList();
+                getVoiceList(false,2,1,"");
             }
         });
 
@@ -234,7 +240,9 @@ public class MainActivity extends AppCompatActivity {
                     tracks.clear();
                     reflashDataSetChanged();
                 }
-                getAlbumList(true);
+                //mohuaiyuan 201708
+//                getAlbumList(true);
+                getVoiceList(true,2,1,"");
             }
         });
 
@@ -305,22 +313,26 @@ public class MainActivity extends AppCompatActivity {
                 Track track=manager.initTrack(options);
 
                 //mohuaiyuan 201708
-                TrackDTO trackDTO=null;
+                TrackDTO trackDTO1=null;
                 try {
-                    trackDTO=new TrackDTO(track);
+                    trackDTO1=new TrackDTO(track);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Gson gson=new Gson();
-                String trackToString=trackDTO.toJsonString();
+                String trackToString=trackDTO1.toJsonString();
                 Log.d(TAG, "track to json: "+trackToString);
 
-                TrackDTO trackDTO2=gson.fromJson(trackToString,TrackDTO.class);
-                Log.d(TAG, "trackDTO2 kind: "+trackDTO2.getKind());
-                Log.d(TAG, "trackDTO2 getPlayUrl32: "+trackDTO2.getPlayUrl32());
-                Log.d(TAG, "trackDTO2 getPlayUrl64: "+trackDTO2.getPlayUrl64());
-                Log.d(TAG, "trackDTO2 getPlayUrl24M4a: "+trackDTO2.getPlayUrl24M4a());
-                Log.d(TAG, "trackDTO2 getPlayUrl64M4a: "+trackDTO2.getPlayUrl64M4a());
+                TrackDTO trackDTO=null;
+                try {
+                    trackDTO= new TrackDTO(trackToString);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "trackDTO2 kind: "+trackDTO.getKind());
+                Log.d(TAG, "trackDTO2 getPlayUrl32: "+trackDTO.getPlayUrl32());
+                Log.d(TAG, "trackDTO2 getPlayUrl64: "+trackDTO.getPlayUrl64());
+                Log.d(TAG, "trackDTO2 getPlayUrl24M4a: "+trackDTO.getPlayUrl24M4a());
+                Log.d(TAG, "trackDTO2 getPlayUrl64M4a: "+trackDTO.getPlayUrl64M4a());
 
 //                String trackTitle="班得瑞 - 清晨";
 //                track.setTrackTitle(trackTitle);
@@ -328,7 +340,18 @@ public class MainActivity extends AppCompatActivity {
 //                int duration=187;
 //                track.setDuration(duration);
 
-                tracks.add(track);
+                //mohuaiyuan 201708 暂时注释
+//                tracks.add(track);
+
+                //mohuaiyuan 201708
+                Track newTrack=null;
+                try {
+                    newTrack=trackDTO.createTrack();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                tracks.add(newTrack);
+
                 reflashDataSetChanged();
 
             }
@@ -351,10 +374,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "getVoicesTags onClick: ");
                 categoryId = 2;
-                type = 0;
+                type = 1;
 
                 try {
-                    categoryId = Integer.valueOf(voiceCategory.getText().toString());
+                    String temp=voiceCategory.getText().toString();
+                    if(temp!=null && temp.length()>0){
+                        categoryId = Integer.valueOf(temp);
+                    }
+
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -374,14 +401,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 categoryId = 2;
                 tagName="";
+                calcDimension=1;
 
                 try {
-                    categoryId = Integer.valueOf(voiceCategory.getText().toString());
+                    String temp=voiceCategory.getText().toString();
+                    if(temp!=null && temp.length()>0){
+                        categoryId = Integer.valueOf(temp);
+                    }
+
                     tagName=voiceTagname.getText().toString();
+
+                    temp=voiceDimension.getText().toString();
+                    if(temp!=null && temp.length()>0){
+                        calcDimension=Integer.valueOf(temp);
+                    }
+
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-                int calcDimension=1;
 
                 getVoiceList(true,categoryId,calcDimension,tagName);
 
@@ -461,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
 
         voiceCategory= (EditText) findViewById(R.id.voiceCategory);
         voiceTagname= (EditText) findViewById(R.id.voiceTagname);
+        voiceDimension= (EditText) findViewById(R.id.voiceDimension);
         getVoicesTags= (Button) findViewById(R.id.getVoiceTags);
         getVoicesList= (Button) findViewById(R.id.getVoicesList);
 
@@ -484,6 +522,8 @@ public class MainActivity extends AppCompatActivity {
                 case TO_GET_TRICK:
                     Random random=new Random();
                     int index=random.nextInt(albums.size());
+                    //mohuaiyuan 201708
+//                    index=0;
                     albumId =  albums.get(index).getId();
                     getTracks(albumId);
 
@@ -593,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getVoiceList(final Map<String, String> specificParams, final boolean isGetTrack){
-        Log.d(TAG, "getAlbumList: ");
+        Log.d(TAG, "getVoiceList: ");
         if (!albums.isEmpty()){
             albums.clear();
         }
@@ -629,6 +669,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onError(int code, String message) {
                             Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
 
+
                         }
                     });
                 }
@@ -638,6 +679,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(int code, String message) {
                 Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+                Toast.makeText(context,"message = [" + message + "]",Toast.LENGTH_SHORT).show();
 
             }
         });
