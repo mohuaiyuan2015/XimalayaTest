@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,8 +19,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tuuba.ximalayatest.R;
 import com.tuuba.ximalayatest.adapter.TrackAdapter;
+import com.tuuba.ximalayatest.dto.TrackDTO;
 import com.tuuba.ximalayatest.utils.CommonRequestManager;
 import com.tuuba.ximalayatest.utils.MyUtils;
 import com.ximalaya.ting.android.opensdk.auth.utils.StringUtil;
@@ -80,10 +83,13 @@ public class MainActivity extends AppCompatActivity {
     private Button play;
     private Button play2;
     private Button getDebugMsg;
+    private EditText voiceCategory;
+    private EditText voiceTagname;
+    private Button getVoicesTags;
+    private Button getVoicesList;
     private RecyclerView tracksRecyclerView;
 
     private TrackAdapter trackAdapter;
-
 
     private Map<String, String> specificParams;
     private int categoryId;
@@ -207,24 +213,7 @@ public class MainActivity extends AppCompatActivity {
                 categoryId = 2;
                 //0-专辑标签，1-声音标签
                 type = 0;
-                specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
-                specificParams.put(DTransferConstants.TYPE, String.valueOf(type));
-                CommonRequest.getTags(specificParams, new IDataCallBack<TagList>() {
-
-                    @Override
-                    public void onSuccess(TagList tagList) {
-                        tags.addAll(tagList.getTagList());
-                        Log.d(TAG, "tagList = [" + tagList + "]");
-                        Log.d(TAG, "tagListToString: " + MyUtils.getInstance().tagListToString(tagList));
-
-                    }
-
-                    @Override
-                    public void onError(int code, String message) {
-                        Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
-
-                    }
-                });
+                getVoiceTags(categoryId,type);
 
             }
         });
@@ -295,10 +284,17 @@ public class MainActivity extends AppCompatActivity {
 //                String play_url_64_m4a="http://audio.xmcdn.com/group24/M00/5B/8D/wKgJNVgzv5zhiy8NACFFNeKAFFw089.m4a";
 
                 //漂洋过海来看你
-                String play_url_32="http://fdfs.xmcdn.com/group29/M09/B2/83/wKgJXVlLPMmwx9RpABEnW-U2VVw911.mp3";
-                String play_url_64="http://fdfs.xmcdn.com/group29/M09/B2/82/wKgJXVlLPMKiWkuCACJN9yxN1M0482.mp3";
-                String play_url_24_m4a="http://audio.xmcdn.com/group28/M05/B4/14/wKgJSFlLPwyCoNbzAA1J_BozPJg641.m4a";
-                String play_url_64_m4a="http://audio.xmcdn.com/group29/M09/B2/7C/wKgJWVlLPMOgbRdFACK7q-Ca5mo930.m4a";
+//                String play_url_32="http://fdfs.xmcdn.com/group29/M09/B2/83/wKgJXVlLPMmwx9RpABEnW-U2VVw911.mp3";
+//                String play_url_64="http://fdfs.xmcdn.com/group29/M09/B2/82/wKgJXVlLPMKiWkuCACJN9yxN1M0482.mp3";
+//                String play_url_24_m4a="http://audio.xmcdn.com/group28/M05/B4/14/wKgJSFlLPwyCoNbzAA1J_BozPJg641.m4a";
+//                String play_url_64_m4a="http://audio.xmcdn.com/group29/M09/B2/7C/wKgJWVlLPMOgbRdFACK7q-Ca5mo930.m4a";
+
+                //trackTitle='《于谦做手术》郭德纲 于谦'
+                String play_url_32="http://fdfs.xmcdn.com/group26/M08/51/CD/wKgJRljoUVaAEK_SAFzp4F7Qs1Q801.mp3";
+                String play_url_64="http://fdfs.xmcdn.com/group27/M00/4D/72/wKgJR1joUVqS3PbRALnTLuVY3Zo822.mp3";
+                String play_url_24_m4a="http://audio.xmcdn.com/group26/M08/51/E5/wKgJWFjoUW-AenCJAEfn32EXkaY896.m4a";
+                String play_url_64_m4a="http://audio.xmcdn.com/group26/M04/51/D0/wKgJRljoUZ3R0gidALwMKmiYw8o743.m4a";
+
 
 
                 options.put(CommonRequestManager.PLAY_URL_32,play_url_32);
@@ -307,6 +303,24 @@ public class MainActivity extends AppCompatActivity {
                 options.put(CommonRequestManager.PLAY_URL_64_M4a,play_url_64_m4a);
 
                 Track track=manager.initTrack(options);
+
+                //mohuaiyuan 201708
+                TrackDTO trackDTO=null;
+                try {
+                    trackDTO=new TrackDTO(track);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Gson gson=new Gson();
+                String trackToString=trackDTO.toJsonString();
+                Log.d(TAG, "track to json: "+trackToString);
+
+                TrackDTO trackDTO2=gson.fromJson(trackToString,TrackDTO.class);
+                Log.d(TAG, "trackDTO2 kind: "+trackDTO2.getKind());
+                Log.d(TAG, "trackDTO2 getPlayUrl32: "+trackDTO2.getPlayUrl32());
+                Log.d(TAG, "trackDTO2 getPlayUrl64: "+trackDTO2.getPlayUrl64());
+                Log.d(TAG, "trackDTO2 getPlayUrl24M4a: "+trackDTO2.getPlayUrl24M4a());
+                Log.d(TAG, "trackDTO2 getPlayUrl64M4a: "+trackDTO2.getPlayUrl64M4a());
 
 //                String trackTitle="班得瑞 - 清晨";
 //                track.setTrackTitle(trackTitle);
@@ -329,6 +343,48 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "tags.size(): "+tags.size());
                 Log.d(TAG, "albums.size(): "+albums.size());
                 Log.d(TAG, "tracks.size(): "+tracks.size());
+            }
+        });
+
+        getVoicesTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "getVoicesTags onClick: ");
+                categoryId = 2;
+                type = 0;
+
+                try {
+                    categoryId = Integer.valueOf(voiceCategory.getText().toString());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                getVoiceTags(categoryId, type);
+
+
+            }
+        });
+
+        getVoicesList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "getVoices onClick: ");
+                if(!tracks.isEmpty()){
+                    tracks.clear();
+                    reflashDataSetChanged();
+                }
+                categoryId = 2;
+                tagName="";
+
+                try {
+                    categoryId = Integer.valueOf(voiceCategory.getText().toString());
+                    tagName=voiceTagname.getText().toString();
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+                int calcDimension=1;
+
+                getVoiceList(true,categoryId,calcDimension,tagName);
+
             }
         });
 
@@ -402,6 +458,12 @@ public class MainActivity extends AppCompatActivity {
         play = (Button) findViewById(R.id.play);
         play2 = (Button) findViewById(R.id.play2);
         getDebugMsg = (Button) findViewById(R.id.getDebugMsg);
+
+        voiceCategory= (EditText) findViewById(R.id.voiceCategory);
+        voiceTagname= (EditText) findViewById(R.id.voiceTagname);
+        getVoicesTags= (Button) findViewById(R.id.getVoiceTags);
+        getVoicesList= (Button) findViewById(R.id.getVoicesList);
+
         tracksRecyclerView= (RecyclerView) findViewById(R.id.stracksRecyclerView);
 
         mMessage = (TextView) findViewById(R.id.message);
@@ -438,6 +500,149 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     *
+     * @param categoryId:category id
+     * @param type: 0 album tag; 1 voice tag
+     */
+    private void getVoiceTags(int categoryId,int type){
+        Log.d(TAG, "getTags: ");
+        //音乐分类
+//        categoryId = 2;
+        //0-专辑标签，1-声音标签
+//        type = 0;
+
+        if (categoryId<0){
+            Log.e(TAG, "cagetory<0 :");
+            return;
+        }
+        if(type>1 || type<0){
+            Log.e(TAG, "type>1 || type<0: " );
+            return;
+        }
+        Log.d(TAG, "categoryId: "+categoryId);
+        Log.d(TAG, "type: "+type);
+
+        specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
+        specificParams.put(DTransferConstants.TYPE, String.valueOf(type));
+        CommonRequest.getTags(specificParams, new IDataCallBack<TagList>() {
+
+            @Override
+            public void onSuccess(TagList tagList) {
+                tags.addAll(tagList.getTagList());
+                Log.d(TAG, "tagList = [" + tagList + "]");
+                Log.d(TAG, "tagListToString: " + MyUtils.getInstance().tagListToString(tagList));
+
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+            }
+        });
+    }
+
+    private void getVoiceList(int categoryId){
+        Log.d(TAG, "getVoiceList: ");
+
+        int calcDimension=1;
+        String tagName="";
+        getVoiceList(false ,categoryId ,calcDimension,tagName);
+
+    }
+
+    private void getVoiceList(boolean isGetTrack,int categoryId , int calcDimension ,String tagName){
+        Log.d(TAG, "getVoiceList: ");
+        if (!specificParams.isEmpty()) {
+            specificParams.clear();
+        }
+
+        if (categoryId<0){
+            Log.e(TAG, "cagetory<0 :");
+            return;
+        }
+        if (calcDimension!=1 && calcDimension!=2 && calcDimension!=3){
+            Log.e(TAG, "calcDimension!=1 && calcDimension!=2 && calcDimension!=3 :");
+            return;
+        }
+        Log.d(TAG, "isGetTrack: "+isGetTrack);
+        Log.d(TAG, "categoryId: "+categoryId);
+        Log.d(TAG, "calcDimension: "+calcDimension);
+        Log.d(TAG, "tagName: "+tagName);
+
+
+        //音乐分类
+//        categoryId = 2;
+        //计算维度，现支持最火（1），最新（2），经典或播放最多（3）
+//        calcDimension = 1;
+        //分类下对应的专辑标签，不填则为热门分类
+//        tagName = "歌单";
+
+        //返回第几页，必须大于等于1，不填默认为1
+//        page = 3000;
+        specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
+        specificParams.put(DTransferConstants.CALC_DIMENSION, String.valueOf(calcDimension));
+//        specificParams.put(DTransferConstants.PAGE, String.valueOf(page));
+        if(tagName!=null && tagName.length()>0){
+            specificParams.put(DTransferConstants.TAG_NAME, tagName);
+        }
+
+        getVoiceList(specificParams,isGetTrack);
+
+    }
+
+    private void getVoiceList(final Map<String, String> specificParams, final boolean isGetTrack){
+        Log.d(TAG, "getAlbumList: ");
+        if (!albums.isEmpty()){
+            albums.clear();
+        }
+        //init
+        successCount=0;
+
+        CommonRequest.getAlbumList(specificParams, new IDataCallBack<AlbumList>() {
+
+            @Override
+            public void onSuccess(AlbumList albumList) {
+//                albums.addAll(albumList.getAlbums());
+//                Log.d(TAG, "albumList = [" + albumList + "]");
+//                Log.d(TAG, "albumListToString: " + MyUtils.getInstance().albumListToString(albumList));
+                final int totalPage= albumList.getTotalPage();
+
+                for(int i=0;i<totalPage;i++){
+                    specificParams.put(DTransferConstants.PAGE,String.valueOf(i+1));
+                    CommonRequest.getAlbumList(specificParams, new IDataCallBack<AlbumList>() {
+                        @Override
+                        public void onSuccess(AlbumList albumList) {
+                            albums.addAll(albumList.getAlbums());
+                            Log.d(TAG, "albumList = [" + albumList + "]");
+                            successCount++;
+                            Log.d(TAG, "successCount: "+successCount);
+                            if(isGetTrack && successCount==totalPage && successCount!=0 ) {
+                                Message message = new Message();
+                                message.what = TO_GET_TRICK;
+                                myHandler.sendMessage(message);
+                            }
+                        }
+
+                        @Override
+                        public void onError(int code, String message) {
+                            Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+            }
+        });
+
+    }
 
     private int successCount=0;
     private void getAlbumList() {

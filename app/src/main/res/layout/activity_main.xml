@@ -7,6 +7,7 @@
     >
    <include layout="@layout/midea_play_layout"></include>
 
+
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -45,6 +46,7 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="@string/get_tracks"
+          android:visibility="gone"
           />
 
       <Button
@@ -70,7 +72,6 @@
           android:layout_height="wrap_content"
           android:textAllCaps="false"
           android:text="@string/playMusic"
-          android:visibility="gone"
 
           />
        <Button
@@ -81,6 +82,68 @@
            android:text="getDebugMsg"
 
            />
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           >
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal">
+               <TextView
+                   android:layout_width="0dip"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:text="@string/cagetoryId"
+                   />
+               <EditText
+                   android:id="@+id/voiceCategory"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:hint="@string/hint_input_category"
+                   />
+
+           </LinearLayout>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               >
+               <TextView
+                   android:layout_width="0dip"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:text="@string/voice_tag_name"
+                   />
+               <EditText
+                   android:id="@+id/voiceTagname"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:hint="@string/hint_input_tag_name"
+                   />
+
+           </LinearLayout>
+
+           <Button
+               android:id="@+id/getVoiceTags"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="@string/get_voices_tags"
+               />
+
+           <Button
+               android:id="@+id/getVoicesList"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="@string/get_voicesList"
+               />
+
+
+       </LinearLayout>
 
 
    </LinearLayout>

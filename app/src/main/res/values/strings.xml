@@ -8,11 +8,22 @@
     <string name="track_title">The song name: </string>
     <string name="duration">Duration: </string>
 
+    <string name="cagetoryId">Category Id:</string>
+    <string name="voice_tag_name">Tag Name:</string>
+
     <string name="get_gategory">getCategory</string>
     <string name="get_Tags">getTags</string>
     <string name="get_albumList">getAlbumList</string>
     <string name="get_tracks">getTracks</string>
     <string name="playMusic">Play</string>
+    <string name="hint_input_category">input category</string>
+    <string name="hint_input_tag_name">input tag</string>
+    <string name="get_voices_tags">getVoiceTags</string>
+    <string name="get_voicesList">getVoicesList</string>
+
+    <string name="track_init_error">TrackDTO init Error!</string>
+
+
 
     <color name="textcolor">#333</color>
 
