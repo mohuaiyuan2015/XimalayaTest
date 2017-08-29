@@ -20,10 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-//import com.tuuba.trackdto.library.TrackDTO;
+import com.tuuba.trackdto.library.TrackDTO;
 import com.tuuba.ximalayatest.R;
 import com.tuuba.ximalayatest.adapter.TrackAdapter;
-import com.tuuba.ximalayatest.dto.TrackDTO;
+//import com.tuuba.ximalayatest.dto.TrackDTO;
 import com.tuuba.ximalayatest.utils.CommonRequestManager;
 import com.tuuba.ximalayatest.utils.MyUtils;
 import com.ximalaya.ting.android.opensdk.auth.utils.StringUtil;
@@ -42,8 +42,10 @@ import com.ximalaya.ting.android.opensdk.model.live.radio.Radio;
 import com.ximalaya.ting.android.opensdk.model.live.schedule.Schedule;
 import com.ximalaya.ting.android.opensdk.model.tag.Tag;
 import com.ximalaya.ting.android.opensdk.model.tag.TagList;
+import com.ximalaya.ting.android.opensdk.model.track.SearchTrackList;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.model.track.TrackList;
+import com.ximalaya.ting.android.opensdk.model.word.SuggestWords;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 import com.ximalaya.ting.android.opensdk.player.advertis.IXmAdsStatusListener;
 import com.ximalaya.ting.android.opensdk.player.appnotification.XmNotificationCreater;
@@ -89,6 +91,12 @@ public class MainActivity extends AppCompatActivity {
     private EditText voiceDimension;
     private Button getVoicesTags;
     private Button getVoicesList;
+    private EditText songNameEditText;
+    private Button searchSong;
+    private Button relevancy;
+
+    private String songName;
+
     private RecyclerView tracksRecyclerView;
 
     private TrackAdapter trackAdapter;
@@ -425,6 +433,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        searchSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, " searchSong onClick: ");
+
+                if(!tracks.isEmpty()){
+                    tracks.clear();
+                    reflashDataSetChanged();
+                }
+
+                songName="小苹果";
+                String temp=songNameEditText.getText().toString();
+                if(temp!=null && temp.length()>0){
+                    songName=temp;
+                }
+                Log.d(TAG, "songName: "+songName);
+                searchSongByName(songName);
+            }
+        });
+
+        relevancy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, " relevancy onClick: ");
+
+                songName="小苹果";
+                String str=songNameEditText.getText().toString();
+                if(str!=null && str.length()>0){
+                    songName=str;
+                }
+                getRelevancyWorld(songName);
+            }
+        });
+
+
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -486,6 +529,128 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void getRelevancyWorld(String songName) {
+        Log.d(TAG, "getRelevancyWorld: ");
+
+        if (!specificParams.isEmpty()) {
+            specificParams.clear();
+        }
+        specificParams.put(DTransferConstants.SEARCH_KEY, songName);
+        CommonRequest.getSuggestWord(specificParams, new IDataCallBack<SuggestWords>() {
+            @Override
+            public void onSuccess(SuggestWords suggestWords) {
+                Log.d(TAG, "suggestWords: "+suggestWords);
+
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+            }
+        });
+
+    }
+
+    private void searchSongByName(String songName) {
+        Log.d(TAG, "searchSongByName: ");
+
+        categoryId=2;
+        calcDimension=4;
+
+        if (!specificParams.isEmpty()) {
+            specificParams.clear();
+        }
+        specificParams.put(DTransferConstants.SEARCH_KEY, songName);
+        specificParams.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
+        specificParams.put(DTransferConstants.CALC_DIMENSION,String.valueOf(calcDimension));
+
+        successCount=0;
+
+        CommonRequest.getSearchedTracks(specificParams, new IDataCallBack<SearchTrackList>() {
+
+            @Override
+            public void onSuccess(SearchTrackList searchTrackList) {
+//                tracks.addAll(searchTrackList.getTracks());
+//                reflashDataSetChanged();
+                Log.d(TAG, "searchTrackList.getCategoryId: "+searchTrackList.getCategoryId());
+                Log.d(TAG, "searchTrackList.getTagName: "+searchTrackList.getTagName());
+                Log.d(TAG, "searchTrackList.getParams: "+searchTrackList.getParams());
+                Log.d(TAG, "searchTrackList.getTotalPage: "+searchTrackList.getTotalPage());
+                Log.d(TAG, "tracks.size(): " + tracks.size());
+
+                final int totalPage=searchTrackList.getTotalPage();
+                for(int page=0;page<totalPage;page++){
+                    specificParams.put(DTransferConstants.PAGE,String.valueOf(page+1));
+                    CommonRequest.getSearchedTracks(specificParams, new IDataCallBack<SearchTrackList>() {
+                        @Override
+                        public void onSuccess(SearchTrackList searchTrackList) {
+                            tracks.addAll(searchTrackList.getTracks());
+                            reflashDataSetChanged();
+                            successCount++;
+                            if(successCount==totalPage && successCount!=0){
+                                playTrack();
+                            }
+
+
+
+
+
+                        }
+
+                        @Override
+                        public void onError(int code, String message) {
+                            Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+                        }
+                    });
+                }
+
+
+//                for (int i = 0; i < tracks.size(); i++) {
+//                    Log.d(TAG, "tracks.getPlayUrl32: " + tracks.get(i).getPlayUrl32());
+//                    Log.d(TAG, "tracks.getPlayUrl64: " + tracks.get(i).getPlayUrl64());
+//                    Log.d(TAG, "tracks.getPlayUrl24M4a: " + tracks.get(i).getPlayUrl24M4a());
+//                    Log.d(TAG, "tracks.getPlayUrl64M4a: " + tracks.get(i).getPlayUrl64M4a());
+//                    Log.d(TAG, "---------------------------------------------: ");
+//                }
+
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+            }
+        });
+
+    }
+
+    private void playTrack(){
+        int position=-1;
+        String keyString=songNameEditText.getText().toString();
+        for(int i=0;i<tracks.size();i++){
+            if (tracks.get(i).getTrackTitle().contains(keyString)){
+                position=i;
+                break;
+            }
+        }
+        Log.d(TAG, "position: "+position);
+
+        if (position==-1){
+            position=0;
+        }
+
+        playTrack(position);
+
+    }
+
+    private void playTrack(int position) {
+
+        mPlayerManager.playList(tracks,position);
+
+    }
+
     private void initUI() {
         getCategory = (Button) findViewById(R.id.getCategory);
         getTags = (Button) findViewById(R.id.getTags);
@@ -501,6 +666,10 @@ public class MainActivity extends AppCompatActivity {
         voiceDimension= (EditText) findViewById(R.id.voiceDimension);
         getVoicesTags= (Button) findViewById(R.id.getVoiceTags);
         getVoicesList= (Button) findViewById(R.id.getVoicesList);
+
+        songNameEditText= (EditText) findViewById(R.id.songName);
+        searchSong= (Button) findViewById(R.id.searchSong);
+        relevancy= (Button) findViewById(R.id.relevancy);
 
         tracksRecyclerView= (RecyclerView) findViewById(R.id.stracksRecyclerView);
 
