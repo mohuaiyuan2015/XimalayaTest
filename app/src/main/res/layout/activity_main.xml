@@ -190,6 +190,7 @@
                     android:layout_height="wrap_content"
                     android:text="relevancy world"
                     android:textAllCaps="false"
+                    android:visibility="gone"
                     />
 
 

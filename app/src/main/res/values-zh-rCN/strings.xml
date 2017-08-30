@@ -3,6 +3,9 @@
 
     <string name="track_title">歌曲名: </string>
     <string name="duration">时长: </string>
+    <string name="play_count">播放数: </string>
+    <string name="favourite_count">喜欢数: </string>
+    <string name="download_count">下载次数: </string>
 
 
     <string name="cagetoryId">内容分类:</string>

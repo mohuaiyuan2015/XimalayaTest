@@ -29,10 +29,17 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private TextView titleTextView;
         private TextView durationTextView;
+        private TextView playCountTextView;
+        private TextView favouriteCountTextView;
+        private TextView downloadCountTextView;
+
         public ViewHolder(View view) {
             super(view);
             titleTextView= (TextView) view.findViewById(R.id.title);
             durationTextView= (TextView) view.findViewById(R.id.duration);
+            playCountTextView= (TextView) view.findViewById(R.id.playCount);
+            favouriteCountTextView= (TextView) view.findViewById(R.id.favouriteCount);
+            downloadCountTextView= (TextView) view.findViewById(R.id.downloadCount);
         }
     }
 
@@ -67,8 +74,10 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
 
         Track track=list.get(position);
         holder.titleTextView.setText(context.getResources().getString(R.string.track_title)+track.getTrackTitle());
-
         holder.durationTextView.setText(context.getResources().getString(R.string.duration)+MyUtils.formatTime(track.getDuration()));
+        holder.playCountTextView.setText(context.getResources().getString(R.string.play_count)+track.getPlayCount());
+        holder.favouriteCountTextView.setText(context.getResources().getString(R.string.favourite_count)+track.getFavoriteCount());
+        holder.downloadCountTextView.setText(context.getResources().getString(R.string.download_count)+track.getDownloadCount());
 
     }
 

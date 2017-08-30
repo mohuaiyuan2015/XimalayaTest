@@ -7,6 +7,9 @@
 
     <string name="track_title">The song name: </string>
     <string name="duration">Duration: </string>
+    <string name="play_count">Play count: </string>
+    <string name="favourite_count">Favourite count: </string>
+    <string name="download_count">Download count: </string>
 
     <string name="cagetoryId">Category Id:</string>
     <string name="voice_tag_name">Tag Name:</string>

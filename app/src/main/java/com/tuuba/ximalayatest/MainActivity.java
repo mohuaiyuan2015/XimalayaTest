@@ -56,7 +56,10 @@ import com.ximalaya.ting.android.opensdk.player.service.XmPlayerException;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -306,11 +309,16 @@ public class MainActivity extends AppCompatActivity {
 //                String play_url_64_m4a="http://audio.xmcdn.com/group29/M09/B2/7C/wKgJWVlLPMOgbRdFACK7q-Ca5mo930.m4a";
 
                 //trackTitle='《于谦做手术》郭德纲 于谦'
-                String play_url_32="http://fdfs.xmcdn.com/group26/M08/51/CD/wKgJRljoUVaAEK_SAFzp4F7Qs1Q801.mp3";
-                String play_url_64="http://fdfs.xmcdn.com/group27/M00/4D/72/wKgJR1joUVqS3PbRALnTLuVY3Zo822.mp3";
-                String play_url_24_m4a="http://audio.xmcdn.com/group26/M08/51/E5/wKgJWFjoUW-AenCJAEfn32EXkaY896.m4a";
-                String play_url_64_m4a="http://audio.xmcdn.com/group26/M04/51/D0/wKgJRljoUZ3R0gidALwMKmiYw8o743.m4a";
+//                String play_url_32="http://fdfs.xmcdn.com/group26/M08/51/CD/wKgJRljoUVaAEK_SAFzp4F7Qs1Q801.mp3";
+//                String play_url_64="http://fdfs.xmcdn.com/group27/M00/4D/72/wKgJR1joUVqS3PbRALnTLuVY3Zo822.mp3";
+//                String play_url_24_m4a="http://audio.xmcdn.com/group26/M08/51/E5/wKgJWFjoUW-AenCJAEfn32EXkaY896.m4a";
+//                String play_url_64_m4a="http://audio.xmcdn.com/group26/M04/51/D0/wKgJRljoUZ3R0gidALwMKmiYw8o743.m4a";
 
+                //beyond 真的爱你
+                String play_url_32="http://fdfs.xmcdn.com/group9/M04/22/52/wKgDZlboEhbAZLxFABEBSwrVj1Y718.mp3";
+                String play_url_64="http://fdfs.xmcdn.com/group16/M01/22/16/wKgDbFboD1uCY1yBACIB8iUP0W0677.mp3";
+                String play_url_24_m4a="http://audio.xmcdn.com/group12/M09/22/10/wKgDW1boEbCzLhAxAA0jykb6puI748.m4a";
+                String play_url_64_m4a="http://audio.xmcdn.com/group16/M00/22/1F/wKgDalboD16BK_oeACJmbrSsmck708.m4a";
 
 
                 options.put(CommonRequestManager.PLAY_URL_32,play_url_32);
@@ -556,6 +564,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "searchSongByName: ");
 
         categoryId=2;
+        //排序条件：2-最新，3-最多播放，4-最相关（默认）
         calcDimension=4;
 
         if (!specificParams.isEmpty()) {
@@ -585,15 +594,45 @@ public class MainActivity extends AppCompatActivity {
                     CommonRequest.getSearchedTracks(specificParams, new IDataCallBack<SearchTrackList>() {
                         @Override
                         public void onSuccess(SearchTrackList searchTrackList) {
-                            tracks.addAll(searchTrackList.getTracks());
+
+                            List<Track> tempTrack=searchTrackList.getTracks();
+                            List<Track> resultTrack=new ArrayList<Track>();
+                            Log.d(TAG, "tempTrack.size(): "+tempTrack.size());
+                            Iterator iterator=tempTrack.iterator();
+                            while (iterator.hasNext()){
+                                Track track= (Track) iterator.next();
+                                int duration=track.getDuration();
+                                //mohuaiyuan 过滤掉  时间小于1分钟和大于 6分钟的歌曲
+                                if (duration>60 && duration<360){
+                                    resultTrack.add(track);
+                                }
+
+                            }
+                            Log.d(TAG, "resultTrack.size(): "+resultTrack.size());
+                            tracks.addAll(resultTrack);
                             reflashDataSetChanged();
+
+
+
                             successCount++;
                             if(successCount==totalPage && successCount!=0){
+
+                                Collections.sort(tracks, new Comparator<Track>() {
+                                    @Override
+                                    public int compare(Track o1, Track o2) {
+                                        if (o1.getPlayCount()>o2.getPlayCount()){
+                                            return -1;
+                                        }else if (o1.getPlayCount()==o2.getPlayCount()){
+                                            return 0;
+                                        }else {
+                                            return 1;
+                                        }
+                                    }
+                                });
+                                reflashDataSetChanged();
+
                                 playTrack();
                             }
-
-
-
 
 
                         }

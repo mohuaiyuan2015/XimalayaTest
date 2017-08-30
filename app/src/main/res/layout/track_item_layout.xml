@@ -17,7 +17,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
+        />
+    <TextView
+        android:id="@+id/playCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/duration"
+        />
+    <TextView
+        android:id="@+id/favouriteCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/playCount"
+        android:visibility="gone"
+        />
+    <TextView
+        android:id="@+id/downloadCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/favouriteCount"
         android:layout_marginBottom="5dip"
+        android:visibility="gone"
         />
 
     <View
@@ -25,7 +45,7 @@
         android:layout_height="1dp"
         android:alpha="0.5"
         android:background="@color/divider"
-        android:layout_below="@+id/duration"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dip"
         />
 
