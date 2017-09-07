@@ -612,8 +612,6 @@ public class MainActivity extends AppCompatActivity {
                             tracks.addAll(resultTrack);
                             reflashDataSetChanged();
 
-
-
                             successCount++;
                             if(successCount==totalPage && successCount!=0){
 
@@ -633,7 +631,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 playTrack();
                             }
-
 
                         }
 
@@ -669,7 +666,7 @@ public class MainActivity extends AppCompatActivity {
         int position=-1;
         String keyString=songNameEditText.getText().toString();
         for(int i=0;i<tracks.size();i++){
-            if (tracks.get(i).getTrackTitle().contains(keyString)){
+            if (tracks.get(i).getTrackTitle().toLowerCase().contains(keyString.toLowerCase())){
                 position=i;
                 break;
             }

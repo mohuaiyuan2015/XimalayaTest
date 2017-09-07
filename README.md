@@ -1,2 +1,0 @@
-# XimalayaTest
-XimalayaTest
