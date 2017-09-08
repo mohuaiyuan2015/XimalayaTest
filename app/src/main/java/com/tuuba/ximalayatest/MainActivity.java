@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText songNameEditText;
     private Button searchSong;
     private Button relevancy;
+    private Button select;
 
     private String songName;
 
@@ -135,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         context=this;
         myHandler=new MyHandler();
 
+        specificParams = new HashMap<String, String>();
+
         initXimalaya();
         initUI();
 
@@ -147,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
         initListener();
 
-        specificParams = new HashMap<String, String>();
 
     }
 
@@ -461,6 +463,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "select.setOnClickListener onClick: ");
+                if (tracks.size()>1){
+
+                    List<Track> tempTracks=new ArrayList<>();
+
+                    String selectString=songNameEditText.getText().toString();
+                    for (int i=0;i<tracks.size();i++){
+                        if (tracks.get(i).getTrackTitle().toLowerCase().contains(selectString.toLowerCase())){
+                                tempTracks.add(tracks.get(i));
+                        }
+                    }
+
+                    if (tempTracks.size()>1){
+                        tracks.clear();
+                        tracks.addAll(tempTracks);
+                        reflashDataSetChanged();
+                    }
+
+                }
+
+            }
+        });
+
         relevancy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -563,9 +591,10 @@ public class MainActivity extends AppCompatActivity {
     private void searchSongByName(String songName) {
         Log.d(TAG, "searchSongByName: ");
 
-        categoryId=2;
+//        分类ID，不填或者为0检索全库
+        categoryId=0;
         //排序条件：2-最新，3-最多播放，4-最相关（默认）
-        calcDimension=4;
+        calcDimension=3;
 
         if (!specificParams.isEmpty()) {
             specificParams.clear();
@@ -595,22 +624,25 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(SearchTrackList searchTrackList) {
 
-                            List<Track> tempTrack=searchTrackList.getTracks();
-                            List<Track> resultTrack=new ArrayList<Track>();
-                            Log.d(TAG, "tempTrack.size(): "+tempTrack.size());
-                            Iterator iterator=tempTrack.iterator();
-                            while (iterator.hasNext()){
-                                Track track= (Track) iterator.next();
-                                int duration=track.getDuration();
-                                //mohuaiyuan 过滤掉  时间小于1分钟和大于 6分钟的歌曲
-                                if (duration>60 && duration<360){
-                                    resultTrack.add(track);
-                                }
+//                            List<Track> tempTrack=searchTrackList.getTracks();
+//                            List<Track> resultTrack=new ArrayList<Track>();
+//                            Log.d(TAG, "tempTrack.size(): "+tempTrack.size());
+//                            Iterator iterator=tempTrack.iterator();
+//                            while (iterator.hasNext()){
+//                                Track track= (Track) iterator.next();
+//                                int duration=track.getDuration();
+//                                //mohuaiyuan 过滤掉  时间小于1分钟和大于 6分钟的歌曲
+//                                if (duration>60 && duration<360){
+//                                    resultTrack.add(track);
+//                                }
+//
+//                            }
+//                            Log.d(TAG, "resultTrack.size(): "+resultTrack.size());
+//                            tracks.addAll(resultTrack);
+//                            reflashDataSetChanged();
 
-                            }
-                            Log.d(TAG, "resultTrack.size(): "+resultTrack.size());
-                            tracks.addAll(resultTrack);
-                            reflashDataSetChanged();
+                            tracks.addAll(searchTrackList.getTracks());
+//                            reflashDataSetChanged();
 
                             successCount++;
                             if(successCount==totalPage && successCount!=0){
@@ -629,7 +661,8 @@ public class MainActivity extends AppCompatActivity {
                                 });
                                 reflashDataSetChanged();
 
-                                playTrack();
+                                //播放
+//                                playTrack();
                             }
 
                         }
@@ -706,6 +739,7 @@ public class MainActivity extends AppCompatActivity {
         songNameEditText= (EditText) findViewById(R.id.songName);
         searchSong= (Button) findViewById(R.id.searchSong);
         relevancy= (Button) findViewById(R.id.relevancy);
+        select= (Button) findViewById(R.id.select);
 
         tracksRecyclerView= (RecyclerView) findViewById(R.id.stracksRecyclerView);
 
@@ -789,7 +823,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getVoiceList(int categoryId){
-        Log.d(TAG, "getVoiceList: ");
+        Log.d(TAG, "getVoiceList(int categoryId): ");
 
         int calcDimension=1;
         String tagName="";
@@ -798,7 +832,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getVoiceList(boolean isGetTrack,int categoryId , int calcDimension ,String tagName){
-        Log.d(TAG, "getVoiceList: ");
+        Log.d(TAG, "getVoiceList(boolean isGetTrack,int categoryId , int calcDimension ,String tagName): ");
         if (!specificParams.isEmpty()) {
             specificParams.clear();
         }
@@ -838,7 +872,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getVoiceList(final Map<String, String> specificParams, final boolean isGetTrack){
-        Log.d(TAG, "getVoiceList: ");
+        Log.d(TAG, "getVoiceList(final Map<String, String> specificParams, final boolean isGetTrack): ");
         if (!albums.isEmpty()){
             albums.clear();
         }
@@ -853,6 +887,7 @@ public class MainActivity extends AppCompatActivity {
 //                Log.d(TAG, "albumList = [" + albumList + "]");
 //                Log.d(TAG, "albumListToString: " + MyUtils.getInstance().albumListToString(albumList));
                 final int totalPage= albumList.getTotalPage();
+                Log.d(TAG, "totalPage: "+totalPage);
 
                 for(int i=0;i<totalPage;i++){
                     specificParams.put(DTransferConstants.PAGE,String.valueOf(i+1));

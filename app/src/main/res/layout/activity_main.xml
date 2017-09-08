@@ -97,7 +97,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
                     >
                     <TextView
                         android:layout_width="0dip"
@@ -118,7 +117,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
                     >
                     <TextView
                         android:layout_width="0dip"
@@ -139,7 +137,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
                     >
                     <TextView
                         android:layout_width="0dip"
@@ -163,7 +160,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/get_voices_tags"
-                    android:visibility="gone"
                     />
 
                 <Button
@@ -191,6 +187,13 @@
                     android:text="relevancy world"
                     android:textAllCaps="false"
                     android:visibility="gone"
+                    />
+                <Button
+                    android:id="@+id/select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="select"
+                    android:textAllCaps="false"
                     />
 
 
