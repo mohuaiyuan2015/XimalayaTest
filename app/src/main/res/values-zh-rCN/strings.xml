@@ -11,6 +11,7 @@
     <string name="cagetoryId">内容分类:</string>
     <string name="voice_tag_name">标签名称:</string>
     <string name="voice_calc_dimension">计算维度:</string>
+    <string name="voice_type">标签类型:</string>
 
     <string name="get_gategory">获取内容分类</string>
     <string name="get_Tags">获取标签</string>
@@ -18,12 +19,22 @@
     <string name="get_tracks">获取音乐列表</string>
     <string name="playMusic">播放</string>
 
-    <string name="hint_input_category">请输入内容分类</string>
-    <string name="hint_input_tag_name">请输入标签名称</string>
-    <string name="hint_input_calc_dimension">请输入计算维度</string>
+    <string name="hint_input_category">内容分类，默认2-音乐</string>
+    <string name="hint_input_tag_name">标签名称，默认“”-热门分类</string>
+    <string name="hint_input_calc_dimension">计算维度，默认1-最火</string>
+    <string name="hint_input_tag_type">标签类型，默认0-专辑标签</string>
+    <string name="hint_input_search_key">搜索关键词,默认 小苹果</string>
+    <string name="hint_input_search_sort_style">排序条件：2-最新，3-最多播放，4-最相关（默认）</string>
 
     <string name="get_voices_tags">获取声音标签</string>
     <string name="get_voicesList">获取声音列表</string>
+
+    <string name="app_name">tuubaSongPhone</string>
+    <string name="app_key">b8ffada89045a2304b1ea1cfe5ad5099</string>
+    <string name="app_secret">628b240ef2d9742d0a8431718205f34c</string>
+    <string name="package_id">com.tuuba.ximalayatest</string>
+
+    <string name="track_init_error">TrackDTO 初始化出错!</string>
 
 
 </resources>

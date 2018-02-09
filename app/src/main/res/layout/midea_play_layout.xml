@@ -26,6 +26,8 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/sound_cover"
             android:text="no play sound"
+            android:ellipsize="end"
+            android:lines="1"
             android:textColor="@color/textcolor" />
 
         <SeekBar

@@ -40,10 +40,12 @@ import com.ximalaya.ting.android.opensdk.model.category.Category;
 import com.ximalaya.ting.android.opensdk.model.category.CategoryList;
 import com.ximalaya.ting.android.opensdk.model.live.radio.Radio;
 import com.ximalaya.ting.android.opensdk.model.live.schedule.Schedule;
+import com.ximalaya.ting.android.opensdk.model.search.SearchAll;
 import com.ximalaya.ting.android.opensdk.model.tag.Tag;
 import com.ximalaya.ting.android.opensdk.model.tag.TagList;
 import com.ximalaya.ting.android.opensdk.model.track.SearchTrackList;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
+import com.ximalaya.ting.android.opensdk.model.track.TrackHotList;
 import com.ximalaya.ting.android.opensdk.model.track.TrackList;
 import com.ximalaya.ting.android.opensdk.model.word.SuggestWords;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
@@ -55,6 +57,7 @@ import com.ximalaya.ting.android.opensdk.player.service.XmPlayerException;
 
 import org.xutils.x;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -92,12 +95,17 @@ public class MainActivity extends AppCompatActivity {
     private EditText voiceCategory;
     private EditText voiceTagname;
     private EditText voiceDimension;
+    private EditText voiceType;
     private Button getVoicesTags;
     private Button getVoicesList;
     private EditText songNameEditText;
+    private EditText sortStyle;
     private Button searchSong;
     private Button relevancy;
     private Button select;
+    private Button sort;
+    private Button searchAll;
+    private Button searchHotTracks;
 
     private String songName;
 
@@ -305,10 +313,10 @@ public class MainActivity extends AppCompatActivity {
 //                String play_url_64_m4a="http://audio.xmcdn.com/group24/M00/5B/8D/wKgJNVgzv5zhiy8NACFFNeKAFFw089.m4a";
 
                 //漂洋过海来看你
-//                String play_url_32="http://fdfs.xmcdn.com/group29/M09/B2/83/wKgJXVlLPMmwx9RpABEnW-U2VVw911.mp3";
-//                String play_url_64="http://fdfs.xmcdn.com/group29/M09/B2/82/wKgJXVlLPMKiWkuCACJN9yxN1M0482.mp3";
-//                String play_url_24_m4a="http://audio.xmcdn.com/group28/M05/B4/14/wKgJSFlLPwyCoNbzAA1J_BozPJg641.m4a";
-//                String play_url_64_m4a="http://audio.xmcdn.com/group29/M09/B2/7C/wKgJWVlLPMOgbRdFACK7q-Ca5mo930.m4a";
+                String play_url_32="http://fdfs.xmcdn.com/group29/M09/B2/83/wKgJXVlLPMmwx9RpABEnW-U2VVw911.mp3";
+                String play_url_64="http://fdfs.xmcdn.com/group29/M09/B2/82/wKgJXVlLPMKiWkuCACJN9yxN1M0482.mp3";
+                String play_url_24_m4a="http://audio.xmcdn.com/group28/M05/B4/14/wKgJSFlLPwyCoNbzAA1J_BozPJg641.m4a";
+                String play_url_64_m4a="http://audio.xmcdn.com/group29/M09/B2/7C/wKgJWVlLPMOgbRdFACK7q-Ca5mo930.m4a";
 
                 //trackTitle='《于谦做手术》郭德纲 于谦'
 //                String play_url_32="http://fdfs.xmcdn.com/group26/M08/51/CD/wKgJRljoUVaAEK_SAFzp4F7Qs1Q801.mp3";
@@ -317,10 +325,10 @@ public class MainActivity extends AppCompatActivity {
 //                String play_url_64_m4a="http://audio.xmcdn.com/group26/M04/51/D0/wKgJRljoUZ3R0gidALwMKmiYw8o743.m4a";
 
                 //beyond 真的爱你
-                String play_url_32="http://fdfs.xmcdn.com/group9/M04/22/52/wKgDZlboEhbAZLxFABEBSwrVj1Y718.mp3";
-                String play_url_64="http://fdfs.xmcdn.com/group16/M01/22/16/wKgDbFboD1uCY1yBACIB8iUP0W0677.mp3";
-                String play_url_24_m4a="http://audio.xmcdn.com/group12/M09/22/10/wKgDW1boEbCzLhAxAA0jykb6puI748.m4a";
-                String play_url_64_m4a="http://audio.xmcdn.com/group16/M00/22/1F/wKgDalboD16BK_oeACJmbrSsmck708.m4a";
+//                String play_url_32="http://fdfs.xmcdn.com/group9/M04/22/52/wKgDZlboEhbAZLxFABEBSwrVj1Y718.mp3";
+//                String play_url_64="http://fdfs.xmcdn.com/group16/M01/22/16/wKgDbFboD1uCY1yBACIB8iUP0W0677.mp3";
+//                String play_url_24_m4a="http://audio.xmcdn.com/group12/M09/22/10/wKgDW1boEbCzLhAxAA0jykb6puI748.m4a";
+//                String play_url_64_m4a="http://audio.xmcdn.com/group16/M00/22/1F/wKgDalboD16BK_oeACJmbrSsmck708.m4a";
 
 
                 options.put(CommonRequestManager.PLAY_URL_32,play_url_32);
@@ -392,12 +400,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "getVoicesTags onClick: ");
                 categoryId = 2;
-                type = 1;
+                type = 0;
 
                 try {
-                    String temp=voiceCategory.getText().toString();
+                    String temp=voiceCategory.getText().toString().trim();
                     if(temp!=null && temp.length()>0){
                         categoryId = Integer.valueOf(temp);
+                    }
+
+                    temp=voiceType.getText().toString().trim();
+                    if(temp!=null && temp.length()>0){
+                        type=Integer.valueOf(temp);
                     }
 
                 } catch (NumberFormatException e) {
@@ -448,18 +461,43 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, " searchSong onClick: ");
 
-                if(!tracks.isEmpty()){
+                if (!tracks.isEmpty()) {
                     tracks.clear();
                     reflashDataSetChanged();
                 }
 
-                songName="小苹果";
-                String temp=songNameEditText.getText().toString();
-                if(temp!=null && temp.length()>0){
-                    songName=temp;
+                songName = "小苹果";
+
+                //        分类ID，不填或者为0检索全库
+                categoryId = 2;
+                //排序条件：2-最新，3-最多播放，4-最相关（默认）
+                calcDimension = 4;
+                try {
+                    String temp = songNameEditText.getText().toString().trim();
+                    if (temp != null && temp.length() > 0) {
+                        songName = temp;
+                    }
+                    temp=voiceCategory.getText().toString().trim();
+                    if (temp != null && temp.length() > 0) {
+                        categoryId = Integer.valueOf(temp);
+                    }
+
+                    temp = sortStyle.getText().toString().trim();
+                    if (temp != null && temp.length() > 0) {
+                        calcDimension = Integer.valueOf(temp);
+                    }
+                    if (calcDimension<2 || calcDimension>4){
+                        calcDimension=4;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                Log.d(TAG, "songName: "+songName);
-                searchSongByName(songName);
+
+                Log.d(TAG, "songName: " + songName);
+                Log.d(TAG, "categoryId: " + categoryId);
+                Log.d(TAG, "calcDimension: " + calcDimension);
+                searchSongByName(songName, categoryId, calcDimension);
             }
         });
 
@@ -469,22 +507,217 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "select.setOnClickListener onClick: ");
                 if (tracks.size()>1){
 
-                    List<Track> tempTracks=new ArrayList<>();
 
-                    String selectString=songNameEditText.getText().toString();
-                    for (int i=0;i<tracks.size();i++){
-                        if (tracks.get(i).getTrackTitle().toLowerCase().contains(selectString.toLowerCase())){
-                                tempTracks.add(tracks.get(i));
+
+                   final String selectString=songNameEditText.getText().toString();
+                    Log.d(TAG, "selectString: "+selectString);
+                    if (selectString==null || selectString.length()<1){
+                        Log.d(TAG, "没有必要过滤歌曲: ");
+                        return;
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "开始过滤歌曲");
+
+                            List<Track> tempTracks=new ArrayList<>();
+                            for (int i=0;i<tracks.size();i++){
+                                String trackName=tracks.get(i).getTrackTitle().toLowerCase();
+//                                Log.d(TAG, "trackTitle: "+trackName);
+                                boolean isContains=trackName.contains(selectString.toLowerCase());
+//                                Log.d(TAG, "isContains: "+isContains);
+                                if (isContains){
+                                    tempTracks.add(tracks.get(i));
+                                }
+                            }
+                            Log.d(TAG, "tempTracks.size(): "+tempTracks.size());
+
+                            if (tempTracks.size()>0){
+                                tracks.clear();
+                                tracks.addAll(tempTracks);
+                                Message message =new Message();
+                                message.what= REFRESH_DATA;
+                                myHandler.sendMessage(message);
+                            }
+
                         }
-                    }
-
-                    if (tempTracks.size()>1){
-                        tracks.clear();
-                        tracks.addAll(tempTracks);
-                        reflashDataSetChanged();
-                    }
+                    }).start();
 
                 }
+
+            }
+        });
+
+        sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "sort.setOnClickListener: ");
+                Collections.sort(tracks, new Comparator<Track>() {
+                    @Override
+                    public int compare(Track o1, Track o2) {
+                        if (o1.getPlayCount() > o2.getPlayCount()) {
+                            return -1;
+                        } else if (o1.getPlayCount() == o2.getPlayCount()) {
+                            return 0;
+                        } else {
+                            return 1;
+                        }
+                    }
+                });
+                reflashDataSetChanged();
+            }
+        });
+
+        searchAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "searchAll.setOnClickListener: ");
+                final Map<String, String> map = new HashMap<String, String>();
+                String searchKey="小苹果";
+                try {
+                    String temp=songNameEditText.getText().toString().trim();
+                    if (temp!=null && temp.length()>0){
+                        searchKey=temp;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (!tracks.isEmpty()) {
+                    tracks.clear();
+                }
+                reflashDataSetChanged();
+
+                Log.d(TAG, "searchKey: "+searchKey);
+                map.put(DTransferConstants.SEARCH_KEY, searchKey);
+                CommonRequest.getSearchAll(map, new IDataCallBack<SearchAll>(){
+
+                    @Override
+                    public void onSuccess(SearchAll searchAll) {
+                        Log.d(TAG, "onSuccess: ");
+
+                        final int totalPage=searchAll.getTrackList().getTotalPage();
+                        Log.d(TAG, "totalPage: "+totalPage);
+                        successCount=0;
+
+                        for (int i=0;i<totalPage;i++){
+                            map.put(DTransferConstants.PAGE,String.valueOf(i+1));
+
+                            CommonRequest.getSearchAll(map, new IDataCallBack<SearchAll>() {
+                                @Override
+                                public void onSuccess(SearchAll searchAll) {
+                                    List<Radio> radios = searchAll.getRadioList().getRadios();
+                                    Log.d(TAG, "radios: " + radios.size());
+                                    for (int i = 0; i < radios.size(); i++) {
+                                        Log.d(TAG, "rate24AacUrl: " + radios.get(i).getRate24AacUrl());
+                                    }
+                                    List<Track> searchTracks = searchAll.getTrackList().getTracks();
+                                    Log.d(TAG, "searchTracks.size(): " + searchTracks.size());
+
+
+//                                     List<Track> tempTrack = searchTrackList.getTracks();
+                                    List<Track> resultTrack = new ArrayList<Track>();
+                                    Log.d(TAG, "tempTrack.size(): " + searchTracks.size());
+                                    Iterator iterator = searchTracks.iterator();
+                                    while (iterator.hasNext()) {
+                                        Track track = (Track) iterator.next();
+                                        int duration = track.getDuration();
+                                        //mohuaiyuan 过滤掉  时间小于1分钟和大于 6分钟的歌曲
+                                        if (duration > 60 && duration < 360) {
+                                            resultTrack.add(track);
+                                        }
+
+                                    }
+                                    Log.d(TAG, "resultTrack.size(): " + resultTrack.size());
+                                    tracks.addAll(resultTrack);
+                                    reflashDataSetChanged();
+
+                                    successCount++;
+                                    if (successCount==totalPage && successCount!=0) {
+                                        Log.d(TAG, "searchAll finish: ");
+                                        //mohuaiyuan 暂时不进行排序
+//                                        Collections.sort(tracks, new Comparator<Track>() {
+//                                            @Override
+//                                            public int compare(Track o1, Track o2) {
+//                                                if (o1.getPlayCount() > o2.getPlayCount()) {
+//                                                    return -1;
+//                                                } else if (o1.getPlayCount() == o2.getPlayCount()) {
+//                                                    return 0;
+//                                                } else {
+//                                                    return 1;
+//                                                }
+//                                            }
+//                                        });
+                                        reflashDataSetChanged();
+
+                                    }
+                                }
+
+                                @Override
+                                public void onError(int i, String s) {
+
+                                }
+                            });
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onError(int code, String message) {
+                        Log.d(TAG, "code = [" + code + "], message = [" + message + "]");
+
+                    }
+                });
+
+            }
+        });
+
+        searchHotTracks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "searchHotTracks.setOnClickListener: ");
+                if (!tracks.isEmpty()){
+                    tracks.clear();
+                }
+                categoryId=2;
+                tagName="";
+                try {
+                    String temp=voiceCategory.getText().toString().trim();
+                    if (temp!=null && temp.length()>0){
+                        categoryId=Integer.valueOf(temp);
+                    }
+                    temp=voiceTagname.getText().toString().trim();
+                    if (temp!=null && temp.length()>0){
+                        tagName=temp;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "categoryId: "+categoryId);
+                Log.d(TAG, "tagName: "+tagName);
+                Map<String, String>map = new HashMap<String, String>();
+                map.put(DTransferConstants.CATEGORY_ID, String.valueOf(categoryId));
+                if (tagName.length()>0){
+                    map.put(DTransferConstants.TAG_NAME, tagName);
+                }
+//                map.put(DTransferConstants.PAGE, mPageNum);
+                CommonRequest.getHotTracks(map, new IDataCallBack<TrackHotList>() {
+                    @Override
+                    public void onSuccess(TrackHotList trackHotList) {
+                        List<Track> resultTrack=trackHotList.getTracks();
+                        Log.d(TAG, "resultTrack.size(): "+resultTrack.size());
+                        tracks.addAll(resultTrack);
+                        reflashDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+                });
+
 
             }
         });
@@ -588,13 +821,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void searchSongByName(String songName) {
-        Log.d(TAG, "searchSongByName: ");
+    private void searchSongByName(String songName){
+        Log.d(TAG, "searchSongByName(String songName): ");
 
 //        分类ID，不填或者为0检索全库
-        categoryId=0;
+        categoryId=2;
         //排序条件：2-最新，3-最多播放，4-最相关（默认）
-        calcDimension=3;
+        calcDimension=4;
+        searchSongByName(songName,categoryId,calcDimension);
+
+
+    }
+
+    private void searchSongByName(String songName,int categoryId,int calcDimension) {
+        Log.d(TAG, "searchSongByName(String songName,int categoryId,int calcDimension): ");
+
 
         if (!specificParams.isEmpty()) {
             specificParams.clear();
@@ -624,42 +865,43 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(SearchTrackList searchTrackList) {
 
-//                            List<Track> tempTrack=searchTrackList.getTracks();
-//                            List<Track> resultTrack=new ArrayList<Track>();
-//                            Log.d(TAG, "tempTrack.size(): "+tempTrack.size());
-//                            Iterator iterator=tempTrack.iterator();
-//                            while (iterator.hasNext()){
-//                                Track track= (Track) iterator.next();
-//                                int duration=track.getDuration();
-//                                //mohuaiyuan 过滤掉  时间小于1分钟和大于 6分钟的歌曲
-//                                if (duration>60 && duration<360){
-//                                    resultTrack.add(track);
-//                                }
-//
-//                            }
-//                            Log.d(TAG, "resultTrack.size(): "+resultTrack.size());
-//                            tracks.addAll(resultTrack);
-//                            reflashDataSetChanged();
+                            List<Track> tempTrack=searchTrackList.getTracks();
+                            List<Track> resultTrack=new ArrayList<Track>();
+                            Log.d(TAG, "tempTrack.size(): "+tempTrack.size());
+                            Iterator iterator=tempTrack.iterator();
+                            while (iterator.hasNext()){
+                                Track track= (Track) iterator.next();
+                                int duration=track.getDuration();
+                                //mohuaiyuan 过滤掉  时间小于1分钟和大于 6分钟的歌曲
+                                if (duration>60 && duration<360){
+                                    resultTrack.add(track);
+                                }
 
-                            tracks.addAll(searchTrackList.getTracks());
+                            }
+                            Log.d(TAG, "resultTrack.size(): "+resultTrack.size());
+                            tracks.addAll(resultTrack);
+                            reflashDataSetChanged();
+
+//                            tracks.addAll(searchTrackList.getTracks());
 //                            reflashDataSetChanged();
 
                             successCount++;
                             if(successCount==totalPage && successCount!=0){
 
-                                Collections.sort(tracks, new Comparator<Track>() {
-                                    @Override
-                                    public int compare(Track o1, Track o2) {
-                                        if (o1.getPlayCount()>o2.getPlayCount()){
-                                            return -1;
-                                        }else if (o1.getPlayCount()==o2.getPlayCount()){
-                                            return 0;
-                                        }else {
-                                            return 1;
-                                        }
-                                    }
-                                });
-                                reflashDataSetChanged();
+                                //mohuaiyuan 暂时不进行排序
+//                                Collections.sort(tracks, new Comparator<Track>() {
+//                                    @Override
+//                                    public int compare(Track o1, Track o2) {
+//                                        if (o1.getPlayCount()>o2.getPlayCount()){
+//                                            return -1;
+//                                        }else if (o1.getPlayCount()==o2.getPlayCount()){
+//                                            return 0;
+//                                        }else {
+//                                            return 1;
+//                                        }
+//                                    }
+//                                });
+//                                reflashDataSetChanged();
 
                                 //播放
 //                                playTrack();
@@ -733,13 +975,18 @@ public class MainActivity extends AppCompatActivity {
         voiceCategory= (EditText) findViewById(R.id.voiceCategory);
         voiceTagname= (EditText) findViewById(R.id.voiceTagname);
         voiceDimension= (EditText) findViewById(R.id.voiceDimension);
+        voiceType= (EditText) findViewById(R.id.voiceType);
         getVoicesTags= (Button) findViewById(R.id.getVoiceTags);
         getVoicesList= (Button) findViewById(R.id.getVoicesList);
 
         songNameEditText= (EditText) findViewById(R.id.songName);
+        sortStyle= (EditText) findViewById(R.id.sortStyle);
         searchSong= (Button) findViewById(R.id.searchSong);
         relevancy= (Button) findViewById(R.id.relevancy);
         select= (Button) findViewById(R.id.select);
+        sort= (Button) findViewById(R.id.sort);
+        searchAll= (Button) findViewById(R.id.searchAll);
+        searchHotTracks= (Button) findViewById(R.id.searchHotTracks);
 
         tracksRecyclerView= (RecyclerView) findViewById(R.id.stracksRecyclerView);
 
@@ -753,6 +1000,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
      private static final int TO_GET_TRICK=23;
+     private static final int REFRESH_DATA=64646;
     class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
@@ -767,6 +1015,12 @@ public class MainActivity extends AppCompatActivity {
                     getTracks(albumId);
 
                     break;
+
+                case REFRESH_DATA:
+                    reflashDataSetChanged();
+                    break;
+
+
                 default:
             }
         }

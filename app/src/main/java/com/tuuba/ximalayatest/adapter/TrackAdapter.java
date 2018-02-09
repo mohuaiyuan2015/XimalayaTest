@@ -73,7 +73,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
         cellViewHolder.itemView.setTag(position);
 
         Track track=list.get(position);
-        holder.titleTextView.setText(context.getResources().getString(R.string.track_title)+track.getTrackTitle());
+        holder.titleTextView.setText(position+" "+context.getResources().getString(R.string.track_title)+track.getTrackTitle());
         holder.durationTextView.setText(context.getResources().getString(R.string.duration)+MyUtils.formatTime(track.getDuration()));
         holder.playCountTextView.setText(context.getResources().getString(R.string.play_count)+track.getPlayCount());
         holder.favouriteCountTextView.setText(context.getResources().getString(R.string.favourite_count)+track.getFavoriteCount());
